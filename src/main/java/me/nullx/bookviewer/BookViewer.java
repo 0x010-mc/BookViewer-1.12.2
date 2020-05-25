@@ -1,5 +1,6 @@
 package me.nullx.bookviewer;
 
+import me.nullx.bookviewer.listener.MouseInputListener;
 import me.nullx.bookviewer.uiscreen.GuiScreenUnclickableBook;
 import net.labymod.api.LabyModAddon;
 import net.labymod.settings.elements.ControlElement;
@@ -20,20 +21,25 @@ public class BookViewer extends LabyModAddon {
     @Override
     public void onEnable() {
         getApi().getEventManager().register(this::handleMessage);
+        getApi().registerForgeListener(new MouseInputListener());
+    }
+
+    public static void openBook(ItemStack book) {
+        new Thread(() -> {
+            try {
+                Thread.sleep(10);
+                Minecraft.getMinecraft().displayGuiScreen(new GuiScreenUnclickableBook(book));
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 
     private boolean handleMessage(String message) {
         if (commandName.equalsIgnoreCase(message.split(" ")[0])) {
             ItemStack itemStack = Minecraft.getMinecraft().player.inventory.getCurrentItem();
             if (itemStack.getItem() == Items.WRITTEN_BOOK) {
-                new Thread(() -> {
-                    try {
-                        Thread.sleep(10);
-                        Minecraft.getMinecraft().displayGuiScreen(new GuiScreenUnclickableBook(itemStack));
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }).start();
+                openBook(itemStack);
             } else {
                 Minecraft.getMinecraft().player.sendMessage(new TextComponentString("You need to hold a written book."));
             }
