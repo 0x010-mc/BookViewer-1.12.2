@@ -214,15 +214,8 @@ public class GuiScreenNewBook extends GuiScreen {
             }
 
             return false;
-        } else {
-            boolean flag = super.handleComponentClick(component);
-
-            if (flag && clickevent.getAction() == ClickEvent.Action.RUN_COMMAND) {
-                this.mc.displayGuiScreen((GuiScreen) null);
-            }
-
-            return flag;
         }
+        return false;
     }
 
     @Nullable
