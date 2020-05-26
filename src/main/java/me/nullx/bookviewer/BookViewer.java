@@ -1,6 +1,5 @@
 package me.nullx.bookviewer;
 
-import me.nullx.bookviewer.listener.MouseInputListener;
 import me.nullx.bookviewer.uiscreen.GuiScreenUnclickableBook;
 import net.labymod.api.LabyModAddon;
 import net.labymod.settings.elements.ControlElement;
@@ -8,6 +7,7 @@ import net.labymod.settings.elements.SettingsElement;
 import net.labymod.settings.elements.StringElement;
 import net.labymod.utils.Material;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextComponentString;
@@ -21,7 +21,6 @@ public class BookViewer extends LabyModAddon {
     @Override
     public void onEnable() {
         getApi().getEventManager().register(this::handleMessage);
-        getApi().registerForgeListener(new MouseInputListener());
     }
 
     public static void openBook(ItemStack book) {
@@ -53,6 +52,16 @@ public class BookViewer extends LabyModAddon {
             getConfig().addProperty("command_name", "/readbook");
         }
         commandName = getConfig().get("command_name").getAsString();
+    }
+
+    public static void handleMouseInput() {
+        Minecraft mc = Minecraft.getMinecraft();
+        ItemStack currentItem = mc.player.inventory.getCurrentItem();
+        KeyBinding useItem = mc.gameSettings.keyBindUseItem;
+        if (useItem.isPressed() && mc.currentScreen == null && currentItem.getItem() == Items.WRITTEN_BOOK) {
+            KeyBinding.setKeyBindState(useItem.getKeyCode(), false);
+            BookViewer.openBook(currentItem);
+        }
     }
 
     @Override
