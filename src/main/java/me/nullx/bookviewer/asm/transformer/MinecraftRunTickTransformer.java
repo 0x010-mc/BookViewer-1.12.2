@@ -35,8 +35,6 @@ public class MinecraftRunTickTransformer implements IClassTransformer {
 
     @Override
     public byte[] transform(String name, String transformedName, byte[] basicClass) {
-        //System.out.println("TRANSFORM CALLED FOR " + name + " WITH TN " + transformedName);
-        //boolean isObfuscated = !name.equalsIgnoreCase(transformedName);
         boolean isObfuscated = true;
         int index = Arrays.asList(classesBeingTransformed).indexOf(transformedName);
         if (index == -1) {
